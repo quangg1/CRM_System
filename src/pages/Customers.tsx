@@ -109,6 +109,37 @@ const Customers: React.FC = () => {
         console.log('View customer:', customer);
     };
 
+    const handleStatusChange = async (customer: Customer, newStatus: Customer['status']) => {
+        try {
+            console.log('🔄 STATUS CHANGE: Updating customer status', {
+                customerId: customer.id,
+                customerName: customer.name,
+                oldStatus: customer.status,
+                newStatus: newStatus,
+                timestamp: new Date().toLocaleString('vi-VN')
+            });
+            
+            setError(null);
+            const updatedCustomer = await customerService.update(customer.id, {
+                ...customer,
+                status: newStatus
+            });
+            
+            console.log('✅ Customer status updated successfully:', updatedCustomer);
+            
+            // Update both customers arrays
+            setCustomers((prev) =>
+                prev.map((c) => (c.id === customer.id ? updatedCustomer : c))
+            );
+            setFilteredCustomers((prev) =>
+                prev.map((c) => (c.id === customer.id ? updatedCustomer : c))
+            );
+        } catch (err: any) {
+            console.error('❌ Error updating customer status:', err);
+            setError(`Failed to update customer status: ${err.message}`);
+        }
+    };
+
     if (loading) {
         return (
             <Box
@@ -184,6 +215,7 @@ const Customers: React.FC = () => {
                     }}
                     onDelete={handleDeleteCustomer}
                     onView={handleViewCustomer}
+                    onStatusChange={handleStatusChange}
                 />
                 <CustomerForm
                     open={openForm}
@@ -199,4 +231,4 @@ const Customers: React.FC = () => {
     );
 };
 
-export default Customers; 
+export default Customers;

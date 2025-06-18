@@ -68,7 +68,10 @@ const Header: React.FC = () => {
     };
 
     return (
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <AppBar position="fixed" sx={{ 
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            marginBottom: '20px'
+        }}>
             <Toolbar>
                 <Typography
                     variant="h6"

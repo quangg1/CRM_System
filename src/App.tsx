@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Customers from "./pages/Customers";
 import Interactions from "./pages/Interactions";
 import Login from "./pages/Login";
+import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { authService } from "./services/authService";
 import theme from "./theme";
@@ -108,10 +109,10 @@ const App: React.FC = () => {
                     <Route
                       path="/"
                       element={<Navigate to="/dashboard" replace />}
-                    />
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    />                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/customers" element={<Customers />} />
                     <Route path="/interactions" element={<Interactions />} />
+                    <Route path="/profile" element={<UserProfile />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/analytics" element={<Analytics />} />
                   </Routes>

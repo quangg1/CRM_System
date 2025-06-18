@@ -7,9 +7,7 @@ export interface ApiResponse<T = any> {
 }
 
 class ApiService {
-    private baseURL: string;
-
-    constructor(baseURL: string) {
+    private baseURL: string;    constructor(baseURL: string) {
         this.baseURL = baseURL;
         console.log('API Service initialized with base URL:', this.baseURL);
     }
