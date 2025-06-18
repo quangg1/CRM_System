@@ -62,19 +62,19 @@ const Login: React.FC = () => {
   // Log page view and component mount
   useEffect(() => {
     console.log("📄 PAGE VIEW: Login Page", {
-      timestamp: new Date().toLocaleString('vi-VN'),
-      url: window.location.href
+      timestamp: new Date().toLocaleString("vi-VN"),
+      url: window.location.href,
     });
-    console.log("🎯 COMPONENT MOUNT: Login", { 
+    console.log("🎯 COMPONENT MOUNT: Login", {
       userAgent: navigator.userAgent,
       screenResolution: `${window.screen.width}x${window.screen.height}`,
       viewportSize: `${window.innerWidth}x${window.innerHeight}`,
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
 
     return () => {
       console.log("🗑️ COMPONENT UNMOUNT: Login", {
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
     };
   }, []);
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     console.log("👤 USER ACTION: Mode Changed", {
       mode: isLogin ? "login" : "register",
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
   }, [isLogin]);
 
@@ -95,7 +95,7 @@ const Login: React.FC = () => {
       email: loginForm.email,
       hasPassword: !!loginForm.password,
       passwordLength: loginForm.password.length,
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
 
     setLoading(true);
@@ -109,7 +109,7 @@ const Login: React.FC = () => {
           error: errorMsg,
           missingEmail: !loginForm.email,
           missingPassword: !loginForm.password,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
         setError(errorMsg);
         return;
@@ -122,7 +122,7 @@ const Login: React.FC = () => {
         console.warn("❌ VALIDATION ERROR: email", {
           error: errorMsg,
           value: loginForm.email,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
         setError(errorMsg);
         return;
@@ -131,7 +131,7 @@ const Login: React.FC = () => {
       console.log("🔍 DEBUG: Login validation passed", {
         email: loginForm.email,
         passwordLength: loginForm.password.length,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
 
       // Use real authentication service
@@ -150,7 +150,7 @@ const Login: React.FC = () => {
           userAgent: navigator.userAgent,
           userId: user.id,
           userRole: user.role,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
         setSuccess("Đăng nhập thành công!");
@@ -159,15 +159,15 @@ const Login: React.FC = () => {
           userId: user.id,
           userRole: user.role,
           email: user.email,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
-        const performanceStatus = duration > 3000 ? '🐌 SLOW' : '⚡ FAST';
+        const performanceStatus = duration > 3000 ? "🐌 SLOW" : "⚡ FAST";
         console.log(`${performanceStatus} PERFORMANCE: Login Process`, {
           duration: `${duration.toFixed(2)}ms`,
           email: loginForm.email,
           success: true,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
         setTimeout(() => {
@@ -175,11 +175,10 @@ const Login: React.FC = () => {
             userId: user.id,
             from: "/login",
             to: "/dashboard",
-            timestamp: new Date().toLocaleString('vi-VN')
+            timestamp: new Date().toLocaleString("vi-VN"),
           });
           navigate("/dashboard");
         }, 1500);
-
       } catch (authError: any) {
         const endTime = performance.now();
         const duration = endTime - startTime;
@@ -188,7 +187,7 @@ const Login: React.FC = () => {
           email: loginForm.email,
           duration: `${duration.toFixed(2)}ms`,
           reason: authError.message || "Authentication failed",
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
         const errorMsg = authError.message || "Email hoặc mật khẩu không đúng";
@@ -198,7 +197,7 @@ const Login: React.FC = () => {
           email: loginForm.email,
           duration: `${duration.toFixed(2)}ms`,
           error: authError.message,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
       }
     } catch (err: any) {
@@ -209,7 +208,7 @@ const Login: React.FC = () => {
       console.error("🚨 ERROR [Login Submit]: Login failed", {
         error: err?.message || err,
         stack: err?.stack,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
       setError(errorMsg);
     } finally {
@@ -217,7 +216,7 @@ const Login: React.FC = () => {
       console.log("🔍 DEBUG: Login attempt completed", {
         email: loginForm.email,
         loading: false,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
     }
   };
@@ -232,7 +231,7 @@ const Login: React.FC = () => {
       company: registerForm.company,
       hasPassword: !!registerForm.password,
       passwordLength: registerForm.password.length,
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
 
     setLoading(true);
@@ -245,7 +244,7 @@ const Login: React.FC = () => {
         error: errorMsg,
         passwordLength: registerForm.password.length,
         confirmPasswordLength: registerForm.confirmPassword.length,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
       setError(errorMsg);
       setLoading(false);
@@ -258,7 +257,7 @@ const Login: React.FC = () => {
         error: errorMsg,
         passwordLength: registerForm.password.length,
         minimumRequired: 6,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
       setError(errorMsg);
       setLoading(false);
@@ -272,7 +271,7 @@ const Login: React.FC = () => {
       console.warn("❌ VALIDATION ERROR: email", {
         error: errorMsg,
         value: registerForm.email,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
       setError(errorMsg);
       setLoading(false);
@@ -285,7 +284,7 @@ const Login: React.FC = () => {
       console.warn("❌ VALIDATION ERROR: name", {
         error: errorMsg,
         value: registerForm.name,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
       setError(errorMsg);
       setLoading(false);
@@ -298,7 +297,7 @@ const Login: React.FC = () => {
         name: registerForm.name,
         company: registerForm.company,
         passwordLength: registerForm.password.length,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
 
       // Use real authentication service
@@ -320,15 +319,15 @@ const Login: React.FC = () => {
           duration: `${duration.toFixed(2)}ms`,
           userId: user.id,
           userRole: user.role,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
-        const performanceStatus = duration > 3000 ? '🐌 SLOW' : '⚡ FAST';
+        const performanceStatus = duration > 3000 ? "🐌 SLOW" : "⚡ FAST";
         console.log(`${performanceStatus} PERFORMANCE: Registration Process`, {
           duration: `${duration.toFixed(2)}ms`,
           email: registerForm.email,
           success: true,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
         setSuccess("Đăng ký thành công! Đăng nhập tự động...");
@@ -337,20 +336,22 @@ const Login: React.FC = () => {
           userId: user.id,
           userRole: user.role,
           email: user.email,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
         // Auto redirect to dashboard after successful registration
         setTimeout(() => {
-          console.log("👤 USER ACTION: Redirect to Dashboard after registration", {
-            userId: user.id,
-            from: "/login",
-            to: "/dashboard",
-            timestamp: new Date().toLocaleString('vi-VN')
-          });
+          console.log(
+            "👤 USER ACTION: Redirect to Dashboard after registration",
+            {
+              userId: user.id,
+              from: "/login",
+              to: "/dashboard",
+              timestamp: new Date().toLocaleString("vi-VN"),
+            }
+          );
           navigate("/dashboard");
         }, 2000);
-
       } catch (authError: any) {
         const endTime = performance.now();
         const duration = endTime - startTime;
@@ -359,16 +360,17 @@ const Login: React.FC = () => {
           email: registerForm.email,
           error: authError.message || "Registration failed",
           duration: `${duration.toFixed(2)}ms`,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
 
-        const errorMsg = authError.message || "Đã xảy ra lỗi. Vui lòng thử lại.";
+        const errorMsg =
+          authError.message || "Đã xảy ra lỗi. Vui lòng thử lại.";
         setError(errorMsg);
 
         console.error("🚨 ERROR [Registration Submit]: Registration failed", {
           error: authError?.message || authError,
           stack: authError?.stack,
-          timestamp: new Date().toLocaleString('vi-VN')
+          timestamp: new Date().toLocaleString("vi-VN"),
         });
       }
     } catch (err: any) {
@@ -376,17 +378,20 @@ const Login: React.FC = () => {
       const duration = endTime - startTime;
       const errorMsg = "Đã xảy ra lỗi. Vui lòng thử lại.";
 
-      console.error("🚨 ERROR [Registration Submit]: Registration unexpected error", {
-        error: err?.message || err,
-        stack: err?.stack,
-        timestamp: new Date().toLocaleString('vi-VN')
-      });
+      console.error(
+        "🚨 ERROR [Registration Submit]: Registration unexpected error",
+        {
+          error: err?.message || err,
+          stack: err?.stack,
+          timestamp: new Date().toLocaleString("vi-VN"),
+        }
+      );
       setError(errorMsg);
     } finally {
       setLoading(false);
       console.log("🔍 DEBUG: Registration attempt completed", {
         email: registerForm.email,
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
     }
   };
@@ -395,9 +400,9 @@ const Login: React.FC = () => {
     const { name, value } = e.target;
 
     console.log("📝 FORM INPUT: login-" + name, {
-      valueLength: typeof value === 'string' ? value.length : 'N/A',
+      valueLength: typeof value === "string" ? value.length : "N/A",
       hasValue: !!value,
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
     setLoginForm((prev) => ({ ...prev, [name]: value }));
     setError("");
@@ -409,9 +414,9 @@ const Login: React.FC = () => {
     const { name, value } = e.target;
 
     console.log("📝 FORM INPUT: register-" + name, {
-      valueLength: typeof value === 'string' ? value.length : 'N/A',
+      valueLength: typeof value === "string" ? value.length : "N/A",
       hasValue: !!value,
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
     setRegisterForm((prev) => ({ ...prev, [name]: value }));
     setError("");
@@ -423,7 +428,7 @@ const Login: React.FC = () => {
     console.log("👤 USER ACTION: Toggle Mode", {
       from: isLogin ? "login" : "register",
       to: newMode ? "login" : "register",
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
 
     setIsLogin(newMode);
@@ -447,7 +452,7 @@ const Login: React.FC = () => {
       previousLoginEmail,
       previousRegisterEmail,
       newMode: newMode ? "login" : "register",
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
   };
 
@@ -458,7 +463,7 @@ const Login: React.FC = () => {
       from: showPassword,
       to: newVisibility,
       field: "password",
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
     setShowPassword(newVisibility);
   };
@@ -469,7 +474,7 @@ const Login: React.FC = () => {
       from: showConfirmPassword,
       to: newVisibility,
       field: "confirmPassword",
-      timestamp: new Date().toLocaleString('vi-VN')
+      timestamp: new Date().toLocaleString("vi-VN"),
     });
     setShowConfirmPassword(newVisibility);
   };
@@ -480,7 +485,7 @@ const Login: React.FC = () => {
       console.warn("⚠️ WARNING: Error message displayed", {
         error,
         mode: isLogin ? "login" : "register",
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
     }
   }, [error, isLogin]);
@@ -490,7 +495,7 @@ const Login: React.FC = () => {
       console.log("ℹ️ INFO: Success message displayed", {
         success,
         mode: isLogin ? "login" : "register",
-        timestamp: new Date().toLocaleString('vi-VN')
+        timestamp: new Date().toLocaleString("vi-VN"),
       });
     }
   }, [success, isLogin]);
