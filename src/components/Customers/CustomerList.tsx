@@ -11,8 +11,12 @@ import {
     Chip,
     IconButton,
     Tooltip,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
 } from '@mui/material';
-import { Edit, Delete, Visibility } from '@mui/icons-material';
+import { Edit, Delete, Visibility, Circle } from '@mui/icons-material';
 import { Customer } from '../../types';
 
 interface CustomerListProps {
@@ -20,6 +24,7 @@ interface CustomerListProps {
     onEdit: (customer: Customer) => void;
     onDelete: (customer: Customer) => void;
     onView: (customer: Customer) => void;
+    onStatusChange?: (customer: Customer, newStatus: Customer['status']) => void;
 }
 
 const getStatusColor = (status: Customer['status']) => {
@@ -40,9 +45,14 @@ const CustomerList: React.FC<CustomerListProps> = ({
     onEdit,
     onDelete,
     onView,
+    onStatusChange,
 }) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [statusMenuAnchor, setStatusMenuAnchor] = React.useState<{
+        element: HTMLElement;
+        customer: Customer;
+    } | null>(null);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -51,6 +61,50 @@ const CustomerList: React.FC<CustomerListProps> = ({
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+    };
+
+    const handleStatusClick = (event: React.MouseEvent<HTMLElement>, customer: Customer) => {
+        event.stopPropagation();
+        setStatusMenuAnchor({
+            element: event.currentTarget,
+            customer: customer
+        });
+    };
+
+    const handleStatusMenuClose = () => {
+        setStatusMenuAnchor(null);
+    };
+
+    const handleStatusChange = (newStatus: Customer['status']) => {
+        if (statusMenuAnchor && onStatusChange) {
+            console.log('🔄 USER ACTION: Change Customer Status', {
+                customerId: statusMenuAnchor.customer.id,
+                customerName: statusMenuAnchor.customer.name,
+                oldStatus: statusMenuAnchor.customer.status,
+                newStatus: newStatus,
+                timestamp: new Date().toLocaleString('vi-VN')
+            });
+            onStatusChange(statusMenuAnchor.customer, newStatus);
+        }
+        handleStatusMenuClose();
+    };
+
+    const getStatusIcon = (status: Customer['status']) => {
+        const color = getStatusColor(status);
+        return <Circle sx={{ fontSize: 8, color: `${color}.main` }} />;
+    };
+
+    const getStatusLabel = (status: Customer['status']) => {
+        switch (status) {
+            case 'lead':
+                return 'Lead';
+            case 'customer':
+                return 'Customer';
+            case 'inactive':
+                return 'Inactive';
+            default:
+                return status;
+        }
     };
 
     return (
@@ -75,12 +129,18 @@ const CustomerList: React.FC<CustomerListProps> = ({
                                     <TableCell>{customer.name}</TableCell>
                                     <TableCell>{customer.email}</TableCell>
                                     <TableCell>{customer.phone}</TableCell>
-                                    <TableCell>{customer.company}</TableCell>
-                                    <TableCell>
+                                    <TableCell>{customer.company}</TableCell>                                    <TableCell>
                                         <Chip
-                                            label={customer.status}
+                                            label={getStatusLabel(customer.status)}
                                             color={getStatusColor(customer.status)}
                                             size="small"
+                                            onClick={(e) => handleStatusClick(e, customer)}
+                                            sx={{ 
+                                                cursor: 'pointer',
+                                                '&:hover': {
+                                                    opacity: 0.8
+                                                }
+                                            }}
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -123,8 +183,32 @@ const CustomerList: React.FC<CustomerListProps> = ({
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <Menu
+                anchorEl={statusMenuAnchor?.element}
+                open={Boolean(statusMenuAnchor)}
+                onClose={handleStatusMenuClose}
+            >
+                <MenuItem onClick={() => handleStatusChange('lead')}>
+                    <ListItemIcon>
+                        {getStatusIcon('lead')}
+                    </ListItemIcon>
+                    <ListItemText primary="Lead" />
+                </MenuItem>
+                <MenuItem onClick={() => handleStatusChange('customer')}>
+                    <ListItemIcon>
+                        {getStatusIcon('customer')}
+                    </ListItemIcon>
+                    <ListItemText primary="Customer" />
+                </MenuItem>
+                <MenuItem onClick={() => handleStatusChange('inactive')}>
+                    <ListItemIcon>
+                        {getStatusIcon('inactive')}
+                    </ListItemIcon>
+                    <ListItemText primary="Inactive" />
+                </MenuItem>
+            </Menu>
         </Paper>
     );
 };
 
-export default CustomerList; 
+export default CustomerList;
