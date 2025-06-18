@@ -87,6 +87,10 @@ const Header: React.FC = () => {
             handleClose();
         }
     };    const handleProfile = () => {
+        console.log('👤 USER ACTION: Navigate to Profile', {
+            userId: currentUser?.id,
+            timestamp: new Date().toLocaleString('vi-VN')
+        });
         navigate('/profile');
         handleClose();
     };
@@ -154,16 +158,16 @@ const Header: React.FC = () => {
                     <Divider />
                     <MenuItem onClick={handleProfile}>
                         <Person sx={{ mr: 1 }} />
-                        Hồ sơ
+                        Profile
                     </MenuItem>
                     <MenuItem onClick={handleSettings}>
                         <SettingsIcon sx={{ mr: 1 }} />
-                        Cài đặt
+                        Settings
                     </MenuItem>
                     <Divider />
                     <MenuItem onClick={handleLogout}>
                         <Logout sx={{ mr: 1 }} />
-                        Đăng xuất
+                        Sign Out
                     </MenuItem>
                 </Menu>
             </Toolbar>

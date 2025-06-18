@@ -94,43 +94,33 @@ class AuthService {
     // Get auth token
     getToken(): string | null {
         return localStorage.getItem(this.TOKEN_KEY);
-    }
-
-    // Update user profile
+    }    // Update user profile
     async updateProfile(userData: Partial<User>): Promise<User> {
         try {
-            const currentUser = this.getCurrentUser();
-            if (!currentUser) {
-                throw new Error('No user logged in');
+            const response = await apiService.put<{ user: User }>('/auth/profile', userData);
+            
+            if (response.success && response.data) {
+                // Update localStorage with new user data
+                localStorage.setItem(this.USER_KEY, JSON.stringify(response.data.user));
+                return response.data.user;
+            } else {
+                throw new Error(response.message || 'Profile update failed');
             }
-
-            const updatedUser = { ...currentUser, ...userData };
-            localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
-
-            return updatedUser;
-
-            // Real implementation would be:
-            // const response = await apiService.put<User>('/auth/profile', userData);
-            // localStorage.setItem(this.USER_KEY, JSON.stringify(response.data));
-            // return response.data;
-        } catch (error) {
-            throw new Error('Profile update failed');
+        } catch (error: any) {
+            throw new Error(error.message || 'Profile update failed');
         }
     }
 
     // Change password
-    async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    async changePassword(data: { currentPassword: string; newPassword: string }): Promise<void> {
         try {
-            // Real implementation would be:
-            // await apiService.post('/auth/change-password', {
-            //     currentPassword,
-            //     newPassword
-            // });
+            const response = await apiService.put('/auth/change-password', data);
             
-            // For demo, just simulate success
-            console.log('Password changed successfully');
-        } catch (error) {
-            throw new Error('Password change failed');
+            if (!response.success) {
+                throw new Error(response.message || 'Password change failed');
+            }
+        } catch (error: any) {
+            throw new Error(error.message || 'Password change failed');
         }
     }
 
