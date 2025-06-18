@@ -83,7 +83,7 @@ const InteractionList: React.FC<InteractionListProps> = ({
                                     <TableCell>
                                         {new Date(interaction.date).toLocaleDateString()}
                                     </TableCell>
-                                    <TableCell>{getCustomerName(interaction.customerId)}</TableCell>
+                                    <TableCell>{getCustomerName(interaction.customer_id)}</TableCell>
                                     <TableCell>
                                         <Chip
                                             label={interaction.type}

@@ -13,21 +13,22 @@ import {
     Box,
 } from '@mui/material';
 import { Customer } from '../../types';
+import { CreateCustomerData, UpdateCustomerData } from '../../services/customerService';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 interface CustomerFormProps {
     open: boolean;
     customer?: Customer;
     onClose: () => void;
-    onSubmit: (customer: Omit<Customer, 'id' | 'createdAt' | 'updatedAt'>) => void;
+    onSubmit: (customer: CreateCustomerData | UpdateCustomerData) => void;
 }
 
-const initialCustomer = {
+const initialCustomer: CreateCustomerData = {
     name: '',
     email: '',
     phone: '',
     company: '',
-    status: 'lead' as 'lead' | 'customer' | 'inactive',
+    status: 'lead',
     notes: '',
 };
 
@@ -37,11 +38,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     onClose,
     onSubmit,
 }) => {
-    const [formData, setFormData] = React.useState<typeof initialCustomer>(initialCustomer);
+    const [formData, setFormData] = React.useState<CreateCustomerData>(initialCustomer);
 
     React.useEffect(() => {
         if (customer) {
-            const { id, createdAt, updatedAt, ...customerData } = customer;
+            const { id, created_at, updated_at, ...customerData } = customer;
             setFormData(customerData);
         } else {
             setFormData(initialCustomer);
@@ -99,16 +100,15 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                             <TextField
                                 name="phone"
                                 label="Phone"
-                                value={formData.phone}
+                                value={formData.phone || ''}
                                 onChange={handleInputChange}
                                 fullWidth
-                                required
                             />
                         </Box>
                         <TextField
                             name="company"
                             label="Company"
-                            value={formData.company}
+                            value={formData.company || ''}
                             onChange={handleInputChange}
                             fullWidth
                         />
@@ -116,7 +116,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                             <InputLabel>Status</InputLabel>
                             <Select
                                 name="status"
-                                value={formData.status}
+                                value={formData.status || 'lead'}
                                 onChange={handleSelectChange}
                                 label="Status"
                             >
@@ -128,7 +128,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                         <TextField
                             name="notes"
                             label="Notes"
-                            value={formData.notes}
+                            value={formData.notes || ''}
                             onChange={handleInputChange}
                             fullWidth
                             multiline

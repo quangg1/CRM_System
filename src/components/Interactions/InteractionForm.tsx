@@ -13,20 +13,18 @@ import {
     SelectChangeEvent,
 } from '@mui/material';
 import { Interaction } from '../../types';
+import { CreateInteractionData, UpdateInteractionData } from '../../services/interactionService';
 
 interface InteractionFormProps {
     open: boolean;
     interaction?: Interaction;
     customers: { id: string; name: string }[];
     onClose: () => void;
-    onSubmit: (data: Omit<Interaction, 'id' | 'createdAt' | 'updatedAt'>) => void;
+    onSubmit: (data: CreateInteractionData | UpdateInteractionData) => void;
 }
 
-type InteractionType = Interaction['type'];
-type InteractionStatus = Interaction['status'];
-
-const initialFormData: Omit<Interaction, 'id' | 'createdAt' | 'updatedAt'> = {
-    customerId: '',
+const initialFormData: CreateInteractionData = {
+    customer_id: '',
     type: 'email',
     description: '',
     date: new Date().toISOString().split('T')[0],
@@ -40,12 +38,12 @@ const InteractionForm: React.FC<InteractionFormProps> = ({
     onClose,
     onSubmit,
 }) => {
-    const [formData, setFormData] = useState<Omit<Interaction, 'id' | 'createdAt' | 'updatedAt'>>(initialFormData);
+    const [formData, setFormData] = useState<CreateInteractionData>(initialFormData);
 
     useEffect(() => {
         if (interaction) {
             setFormData({
-                customerId: interaction.customerId,
+                customer_id: interaction.customer_id,
                 type: interaction.type,
                 description: interaction.description,
                 date: new Date(interaction.date).toISOString().split('T')[0],
@@ -88,8 +86,8 @@ const InteractionForm: React.FC<InteractionFormProps> = ({
                     <FormControl fullWidth margin="normal">
                         <InputLabel>Customer</InputLabel>
                         <Select
-                            name="customerId"
-                            value={formData.customerId}
+                            name="customer_id"
+                            value={formData.customer_id}
                             onChange={handleSelectChange}
                             required
                         >
@@ -140,7 +138,7 @@ const InteractionForm: React.FC<InteractionFormProps> = ({
                         <InputLabel>Status</InputLabel>
                         <Select
                             name="status"
-                            value={formData.status}
+                            value={formData.status || 'scheduled'}
                             onChange={handleSelectChange}
                             required
                         >

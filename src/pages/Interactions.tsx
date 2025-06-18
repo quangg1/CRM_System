@@ -1,42 +1,82 @@
-import React from 'react';
-import { Box, Container, Typography, Button, Theme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Container, Typography, Button, Alert, CircularProgress } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import InteractionList from '../components/Interactions/InteractionList';
 import InteractionForm from '../components/Interactions/InteractionForm';
+import interactionService, { CreateInteractionData, UpdateInteractionData } from '../services/interactionService';
+import customerService from '../services/customerService';
 import { Interaction, Customer } from '../types';
 
 const Interactions: React.FC = () => {
-    const [interactions, setInteractions] = React.useState<Interaction[]>([]);
-    const [customers, setCustomers] = React.useState<Customer[]>([]);
-    const [openForm, setOpenForm] = React.useState(false);
-    const [selectedInteraction, setSelectedInteraction] = React.useState<Interaction | undefined>();
+    const [interactions, setInteractions] = useState<Interaction[]>([]);
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [openForm, setOpenForm] = useState(false);
+    const [selectedInteraction, setSelectedInteraction] = useState<Interaction | undefined>();
 
-    const handleAddInteraction = (interactionData: Omit<Interaction, 'id' | 'createdAt' | 'updatedAt'>) => {
-        const newInteraction: Interaction = {
-            ...interactionData,
-            id: Date.now().toString(),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        };
-        setInteractions((prev) => [...prev, newInteraction]);
-    };
+    // Fetch data on component mount
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-    const handleEditInteraction = (interactionData: Omit<Interaction, 'id' | 'createdAt' | 'updatedAt'>) => {
-        if (selectedInteraction) {
-            const updatedInteraction: Interaction = {
-                ...interactionData,
-                id: selectedInteraction.id,
-                createdAt: selectedInteraction.createdAt,
-                updatedAt: new Date().toISOString(),
-            };
-            setInteractions((prev) =>
-                prev.map((i) => (i.id === selectedInteraction.id ? updatedInteraction : i))
-            );
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            // Fetch interactions and customers in parallel
+            const [interactionsData, customersData] = await Promise.all([
+                interactionService.getAll(),
+                customerService.getAll()
+            ]);
+            
+            setInteractions(interactionsData);
+            setCustomers(customersData);
+        } catch (err) {
+            console.error('Error fetching data:', err);
+            setError('Failed to load data. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleDeleteInteraction = (interaction: Interaction) => {
-        setInteractions((prev) => prev.filter((i) => i.id !== interaction.id));
+    const handleAddInteraction = async (interactionData: CreateInteractionData) => {
+        try {
+            const newInteraction = await interactionService.create(interactionData);
+            setInteractions((prev) => [newInteraction, ...prev]);
+            setOpenForm(false);
+            setSelectedInteraction(undefined);
+        } catch (err) {
+            console.error('Error creating interaction:', err);
+            setError('Failed to create interaction. Please try again.');
+        }
+    };
+
+    const handleEditInteraction = async (interactionData: UpdateInteractionData) => {
+        if (selectedInteraction) {
+            try {
+                const updatedInteraction = await interactionService.update(selectedInteraction.id, interactionData);
+                setInteractions((prev) =>
+                    prev.map((i) => (i.id === selectedInteraction.id ? updatedInteraction : i))
+                );
+                setOpenForm(false);
+                setSelectedInteraction(undefined);
+            } catch (err) {
+                console.error('Error updating interaction:', err);
+                setError('Failed to update interaction. Please try again.');
+            }
+        }
+    };
+
+    const handleDeleteInteraction = async (interaction: Interaction) => {
+        try {
+            await interactionService.delete(interaction.id);
+            setInteractions((prev) => prev.filter((i) => i.id !== interaction.id));
+        } catch (err) {
+            console.error('Error deleting interaction:', err);
+            setError('Failed to delete interaction. Please try again.');
+        }
     };
 
     const handleViewInteraction = (interaction: Interaction) => {
@@ -44,11 +84,35 @@ const Interactions: React.FC = () => {
         console.log('View interaction:', interaction);
     };
 
+    if (loading) {
+        return (
+            <Box
+                component="main"
+                sx={{
+                    backgroundColor: (theme) =>
+                        theme.palette.mode === 'light'
+                            ? theme.palette.grey[100]
+                            : theme.palette.grey[900],
+                    flexGrow: 1,
+                    height: '100vh',
+                    overflow: 'auto',
+                    pt: 8,
+                    px: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
         <Box
             component="main"
             sx={{
-                backgroundColor: (theme: Theme) =>
+                backgroundColor: (theme) =>
                     theme.palette.mode === 'light'
                         ? theme.palette.grey[100]
                         : theme.palette.grey[900],
@@ -60,9 +124,14 @@ const Interactions: React.FC = () => {
             }}
         >
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+                        {error}
+                    </Alert>
+                )}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                     <Typography variant="h4" component="h1">
-                        Interactions
+                        Interactions ({interactions.length})
                     </Typography>
                     <Button
                         variant="contained"

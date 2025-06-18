@@ -1,46 +1,200 @@
-# Getting Started with Create React App
+# CRM System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive Customer Relationship Management (CRM) system built with React TypeScript frontend and Node.js Express backend with MySQL database.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Customer Management**: Add, edit, delete, and view customers
+- **Interaction Tracking**: Record and manage customer interactions (calls, emails, meetings, notes)
+- **Dashboard**: Real-time statistics and upcoming interactions
+- **Search & Filter**: Find customers and interactions quickly
+- **Responsive Design**: Works on desktop and mobile devices
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Frontend
+- React 19 with TypeScript
+- Material-UI (MUI) for UI components
+- React Router for navigation
+- Axios for API calls
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Backend
+- Node.js with Express
+- MySQL database with mysql2
+- RESTful API design
+- CORS enabled for frontend integration
 
-### `npm test`
+## Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (v16 or higher)
+- MySQL (v8.0 or higher)
+- npm or yarn
 
-### `npm run build`
+## Installation & Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Clone the repository
+```bash
+git clone <repository-url>
+cd CRM_System
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Database Setup
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Start your MySQL server
+2. Create a new database:
+```sql
+CREATE DATABASE crm_system;
+```
 
-### `npm run eject`
+3. Import the database schema:
+```bash
+mysql -u root -p crm_system < database.sql
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 3. Backend Setup
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+3. Create environment file:
+```bash
+# Create .env file with the following content:
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=crm_system
+PORT=5000
+NODE_ENV=development
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRES_IN=24h
+```
 
-## Learn More
+4. Start the backend server:
+```bash
+npm run dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The backend will be running on `http://localhost:5000`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Frontend Setup
+
+1. Open a new terminal and navigate to the project root:
+```bash
+cd CRM_System
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create environment file:
+```bash
+# Create .env file with the following content:
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+4. Start the frontend development server:
+```bash
+npm start
+```
+
+The frontend will be running on `http://localhost:3000`
+
+## API Endpoints
+
+### Customers
+- `GET /api/customers` - Get all customers
+- `GET /api/customers/:id` - Get customer by ID
+- `GET /api/customers/status/:status` - Get customers by status
+- `GET /api/customers/search?q=query` - Search customers
+- `GET /api/customers/stats` - Get customer statistics
+- `POST /api/customers` - Create new customer
+- `PUT /api/customers/:id` - Update customer
+- `DELETE /api/customers/:id` - Delete customer
+
+### Interactions
+- `GET /api/interactions` - Get all interactions
+- `GET /api/interactions/:id` - Get interaction by ID
+- `GET /api/interactions/customer/:customerId` - Get interactions by customer
+- `GET /api/interactions/type/:type` - Get interactions by type
+- `GET /api/interactions/status/:status` - Get interactions by status
+- `GET /api/interactions/upcoming` - Get upcoming interactions
+- `GET /api/interactions/stats` - Get interaction statistics
+- `POST /api/interactions` - Create new interaction
+- `PUT /api/interactions/:id` - Update interaction
+- `DELETE /api/interactions/:id` - Delete interaction
+
+## Project Structure
+
+```
+CRM_System/
+├── backend/                 # Backend API
+│   ├── config/             # Database configuration
+│   ├── controllers/        # API controllers
+│   ├── models/            # Database models
+│   ├── routes/            # API routes
+│   ├── middleware/        # Custom middleware
+│   ├── server.js          # Main server file
+│   └── package.json
+├── src/                   # Frontend React app
+│   ├── components/        # Reusable components
+│   ├── pages/            # Page components
+│   ├── services/         # API services
+│   ├── types/            # TypeScript interfaces
+│   └── ...
+├── database.sql          # Database schema
+└── README.md
+```
+
+## Usage
+
+1. **Dashboard**: View overall statistics and upcoming interactions
+2. **Customers**: Manage customer information and status
+3. **Interactions**: Track all customer interactions and communications
+
+## Development
+
+### Backend Development
+```bash
+cd backend
+npm run dev  # Start with nodemon for auto-reload
+```
+
+### Frontend Development
+```bash
+npm start    # Start React development server
+```
+
+## Production Build
+
+### Frontend
+```bash
+npm run build
+```
+
+### Backend
+```bash
+cd backend
+npm start
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
