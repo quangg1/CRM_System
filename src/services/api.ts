@@ -20,9 +20,13 @@ class ApiService {
     ): Promise<ApiResponse<T>> {
         const url = `${this.baseURL}${endpoint}`;
 
+        // Get auth token if available
+        const token = localStorage.getItem('token');
+
         const defaultOptions: RequestInit = {
             headers: {
                 'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` }),
                 ...options.headers,
             },
         };

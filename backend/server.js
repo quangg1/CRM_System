@@ -8,6 +8,7 @@ const errorHandler = require('./middleware/errorHandler');
 // Import routes
 const customerRoutes = require('./routes/customers');
 const interactionRoutes = require('./routes/interactions');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 testConnection();
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/interactions', interactionRoutes);
 
@@ -37,8 +39,8 @@ app.get('/', (req, res) => {
     res.json({
         success: true,
         message: 'Welcome to CRM System API',
-        version: '1.0.0',
-        endpoints: {
+        version: '1.0.0',        endpoints: {
+            auth: '/api/auth',
             customers: '/api/customers',
             interactions: '/api/interactions',
             health: '/api/health'
