@@ -84,6 +84,40 @@ const Interactions: React.FC = () => {
         console.log('View interaction:', interaction);
     };
 
+    const formatDateForMySQL = (dateStr: string) => {
+        const d = new Date(dateStr);
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    };
+
+    const handleTypeChange = async (interaction: Interaction, newType: Interaction['type']) => {
+        try {
+            const updated = await interactionService.update(interaction.id, {
+                ...interaction,
+                type: newType,
+                date: formatDateForMySQL(interaction.date),
+            });
+            setInteractions((prev) => prev.map((i) => (i.id === interaction.id ? updated : i)));
+        } catch (err) {
+            console.error('Error updating interaction type:', err);
+            setError('Failed to update interaction type. Please try again.');
+        }
+    };
+
+    const handleStatusChange = async (interaction: Interaction, newStatus: Interaction['status']) => {
+        try {
+            const updated = await interactionService.update(interaction.id, {
+                ...interaction,
+                status: newStatus,
+                date: formatDateForMySQL(interaction.date),
+            });
+            setInteractions((prev) => prev.map((i) => (i.id === interaction.id ? updated : i)));
+        } catch (err) {
+            console.error('Error updating interaction status:', err);
+            setError('Failed to update interaction status. Please try again.');
+        }
+    };
+
     if (loading) {
         return (
             <Box
@@ -153,6 +187,8 @@ const Interactions: React.FC = () => {
                     }}
                     onDelete={handleDeleteInteraction}
                     onView={handleViewInteraction}
+                    onTypeChange={handleTypeChange}
+                    onStatusChange={handleStatusChange}
                 />
                 <InteractionForm
                     open={openForm}

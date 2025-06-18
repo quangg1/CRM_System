@@ -16,6 +16,9 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    Menu,
+    ListItemIcon,
+    ListItemText,
 } from '@mui/material';
 import { Visibility, Edit, Delete, Search } from '@mui/icons-material';
 import { Interaction, Customer } from '../../types';
@@ -26,6 +29,8 @@ interface InteractionListProps {
     onView: (interaction: Interaction) => void;
     onEdit: (interaction: Interaction) => void;
     onDelete: (interaction: Interaction) => void;
+    onTypeChange?: (interaction: Interaction, newType: Interaction['type']) => void;
+    onStatusChange?: (interaction: Interaction, newStatus: Interaction['status']) => void;
 }
 
 const getTypeColor = (type: Interaction['type']) => {
@@ -43,17 +48,59 @@ const getTypeColor = (type: Interaction['type']) => {
     }
 };
 
+const typeOptions: Interaction['type'][] = ['call', 'email', 'meeting', 'note'];
+
+const getTypeLabel = (type: Interaction['type']) => {
+    switch (type) {
+        case 'call': return 'Call';
+        case 'email': return 'Email';
+        case 'meeting': return 'Meeting';
+        case 'note': return 'Note';
+        default: return type;
+    }
+};
+
+const statusOptions: Interaction['status'][] = ['scheduled', 'completed', 'cancelled'];
+const getStatusLabel = (status: Interaction['status']) => {
+    switch (status) {
+        case 'scheduled': return 'Scheduled';
+        case 'completed': return 'Completed';
+        case 'cancelled': return 'Cancelled';
+        default: return status;
+    }
+};
+const getStatusColor = (status: Interaction['status']) => {
+    switch (status) {
+        case 'completed': return 'success';
+        case 'scheduled': return 'warning';
+        case 'cancelled': return 'error';
+        default: return 'default';
+    }
+};
+
 const InteractionList: React.FC<InteractionListProps> = ({
     interactions,
     customers,
     onView,
     onEdit,
     onDelete,
+    onTypeChange,
+    onStatusChange,
 }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchName, setSearchName] = useState('');
     const [searchStatus, setSearchStatus] = useState<string>('all');
+
+    const [typeMenuAnchor, setTypeMenuAnchor] = useState<{
+        element: HTMLElement;
+        interaction: Interaction;
+    } | null>(null);
+
+    const [statusMenuAnchor, setStatusMenuAnchor] = useState<{
+        element: HTMLElement;
+        interaction: Interaction;
+    } | null>(null);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -84,6 +131,53 @@ const InteractionList: React.FC<InteractionListProps> = ({
     React.useEffect(() => {
         setPage(0);
     }, [searchName, searchStatus]);
+
+    const handleTypeClick = (event: React.MouseEvent<HTMLElement>, interaction: Interaction) => {
+        event.stopPropagation();
+        setTypeMenuAnchor({ element: event.currentTarget, interaction });
+    };
+
+    const handleTypeMenuClose = () => {
+        setTypeMenuAnchor(null);
+    };
+
+    const handleTypeChange = (newType: Interaction['type']) => {
+        handleTypeMenuClose();
+        if (typeMenuAnchor && typeof onTypeChange === 'function') {
+            onTypeChange(typeMenuAnchor.interaction, newType);
+        }
+    };
+
+    const handleStatusClick = (event: React.MouseEvent<HTMLElement>, interaction: Interaction) => {
+        event.stopPropagation();
+        setStatusMenuAnchor({ element: event.currentTarget, interaction });
+    };
+
+    const handleStatusMenuClose = () => {
+        setStatusMenuAnchor(null);
+    };
+
+    const handleStatusChange = (newStatus: Interaction['status']) => {
+        handleStatusMenuClose();
+        if (statusMenuAnchor && typeof onStatusChange === 'function') {
+            onStatusChange(statusMenuAnchor.interaction, newStatus);
+        }
+    };
+
+    React.useEffect(() => {
+        if (
+            typeMenuAnchor &&
+            !interactions.some(i => i.id === typeMenuAnchor.interaction.id)
+        ) {
+            setTypeMenuAnchor(null);
+        }
+        if (
+            statusMenuAnchor &&
+            !interactions.some(i => i.id === statusMenuAnchor.interaction.id)
+        ) {
+            setStatusMenuAnchor(null);
+        }
+    }, [interactions]);
 
     return (
         <Paper>
@@ -146,17 +240,21 @@ const InteractionList: React.FC<InteractionListProps> = ({
                                     <TableCell>{getCustomerName(interaction.customer_id)}</TableCell>
                                     <TableCell>
                                         <Chip
-                                            label={interaction.type}
+                                            label={getTypeLabel(interaction.type)}
                                             color={getTypeColor(interaction.type)}
                                             size="small"
+                                            onClick={(e) => handleTypeClick(e, interaction)}
+                                            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
                                         />
                                     </TableCell>
                                     <TableCell>{interaction.description}</TableCell>
                                     <TableCell>
                                         <Chip
-                                            label={interaction.status}
-                                            color={interaction.status === 'completed' ? 'success' : 'warning'}
+                                            label={getStatusLabel(interaction.status)}
+                                            color={getStatusColor(interaction.status)}
                                             size="small"
+                                            onClick={(e) => handleStatusClick(e, interaction)}
+                                            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
                                         />
                                     </TableCell>
                                     <TableCell align="right">
@@ -193,6 +291,34 @@ const InteractionList: React.FC<InteractionListProps> = ({
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <Menu
+                anchorEl={typeMenuAnchor?.element}
+                open={Boolean(typeMenuAnchor)}
+                onClose={handleTypeMenuClose}
+            >
+                {typeOptions.map((type) => (
+                    <MenuItem key={type} onClick={() => handleTypeChange(type)}>
+                        <ListItemIcon>
+                            <Chip label={getTypeLabel(type)} color={getTypeColor(type)} size="small" />
+                        </ListItemIcon>
+                        <ListItemText primary={getTypeLabel(type)} />
+                    </MenuItem>
+                ))}
+            </Menu>
+            <Menu
+                anchorEl={statusMenuAnchor?.element}
+                open={Boolean(statusMenuAnchor)}
+                onClose={handleStatusMenuClose}
+            >
+                {statusOptions.map((status) => (
+                    <MenuItem key={status} onClick={() => handleStatusChange(status)}>
+                        <ListItemIcon>
+                            <Chip label={getStatusLabel(status)} color={getStatusColor(status)} size="small" />
+                        </ListItemIcon>
+                        <ListItemText primary={getStatusLabel(status)} />
+                    </MenuItem>
+                ))}
+            </Menu>
         </Paper>
     );
 };
