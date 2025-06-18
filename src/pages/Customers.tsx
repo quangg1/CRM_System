@@ -26,7 +26,7 @@ const Customers: React.FC = () => {
         return customers.filter((customer) => {
             const nameMatch = customer.name.toLowerCase().includes(searchQuery.toLowerCase());
             const statusMatch = searchStatus === 'all' || customer.status === searchStatus;
-            
+
             return nameMatch && statusMatch;
         });
     }, [customers, searchQuery, searchStatus]);
@@ -111,31 +111,28 @@ const Customers: React.FC = () => {
 
     const handleStatusChange = async (customer: Customer, newStatus: Customer['status']) => {
         try {
-            console.log('🔄 STATUS CHANGE: Updating customer status', {
+            console.log(' STATUS CHANGE: Updating customer status', {
                 customerId: customer.id,
                 customerName: customer.name,
                 oldStatus: customer.status,
                 newStatus: newStatus,
                 timestamp: new Date().toLocaleString('vi-VN')
             });
-            
+
             setError(null);
             const updatedCustomer = await customerService.update(customer.id, {
                 ...customer,
                 status: newStatus
             });
-            
-            console.log('✅ Customer status updated successfully:', updatedCustomer);
-            
-            // Update both customers arrays
+
+            console.log('Customer status updated successfully:', updatedCustomer);
+
+            // Update customers array - filteredCustomers will automatically update via useMemo
             setCustomers((prev) =>
                 prev.map((c) => (c.id === customer.id ? updatedCustomer : c))
             );
-            setFilteredCustomers((prev) =>
-                prev.map((c) => (c.id === customer.id ? updatedCustomer : c))
-            );
         } catch (err: any) {
-            console.error('❌ Error updating customer status:', err);
+            console.error('Error updating customer status:', err);
             setError(`Failed to update customer status: ${err.message}`);
         }
     };

@@ -48,8 +48,7 @@ const Header: React.FC = () => {
     };
 
     const handleProfile = () => {
-        // Navigate to profile page (you can implement this later)
-        console.log('Navigate to profile');
+        navigate('/profile');
         handleClose();
     };
 

@@ -85,7 +85,7 @@ const UserProfile: React.FC = () => {
     const { name, value } = e.target;
     setPasswordForm(prev => ({ ...prev, [name]: value }));
     setError('');
-    console.log('📝 FORM INPUT: password-' + name, {
+    console.log('FORM INPUT: password-' + name, {
       valueLength: value.length,
       hasValue: !!value,
       timestamp: new Date().toLocaleString('vi-VN')
@@ -147,7 +147,7 @@ const UserProfile: React.FC = () => {
         return;
       }
 
-      console.log('ℹ️ INFO: Profile Update Started', {
+      console.log('INFO: Profile Update Started', {
         userId: user?.id,
         changes: profileForm,
         timestamp: new Date().toLocaleString('vi-VN')
@@ -155,15 +155,15 @@ const UserProfile: React.FC = () => {
 
       // Update profile using authService
       const updatedUser = await authService.updateProfile(profileForm);
-      
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 
       setUser(updatedUser);
       setIsEditing(false);
       setSuccess('Cập nhật thông tin thành công!');
-      
-      console.log('✅ PROFILE UPDATE SUCCESS', {
+
+      console.log('PROFILE UPDATE SUCCESS', {
         userId: updatedUser.id,
         duration: `${duration.toFixed(2)}ms`,
         timestamp: new Date().toLocaleString('vi-VN')
@@ -174,13 +174,13 @@ const UserProfile: React.FC = () => {
     } catch (err: any) {
       const endTime = performance.now();
       const duration = endTime - startTime;
-      
-      console.error('🚨 ERROR [Profile Update]: Update failed', {
+
+      console.error('ERROR [Profile Update]: Update failed', {
         error: err?.message || err,
         duration: `${duration.toFixed(2)}ms`,
         timestamp: new Date().toLocaleString('vi-VN')
       });
-      
+
       setError(err.message || 'Cập nhật thông tin thất bại');
     } finally {
       setLoading(false);
@@ -212,10 +212,12 @@ const UserProfile: React.FC = () => {
         return;
       }
 
-      console.log('ℹ️ INFO: Password Change Started', {
+      console.log('INFO: Password Change Started', {
         userId: user?.id,
         timestamp: new Date().toLocaleString('vi-VN')
-      });      await authService.changePassword(
+      });
+      
+      await authService.changePassword(
         passwordForm.currentPassword,
         passwordForm.newPassword
       );
@@ -231,7 +233,7 @@ const UserProfile: React.FC = () => {
       });
       setSuccess('Đổi mật khẩu thành công!');
 
-      console.log('🔒 PASSWORD CHANGE SUCCESS', {
+      console.log('PASSWORD CHANGE SUCCESS', {
         userId: user?.id,
         duration: `${duration.toFixed(2)}ms`,
         timestamp: new Date().toLocaleString('vi-VN')
@@ -242,13 +244,13 @@ const UserProfile: React.FC = () => {
     } catch (err: any) {
       const endTime = performance.now();
       const duration = endTime - startTime;
-      
-      console.error('🚨 ERROR [Password Change]: Change failed', {
+
+      console.error('ERROR [Password Change]: Change failed', {
         error: err?.message || err,
         duration: `${duration.toFixed(2)}ms`,
         timestamp: new Date().toLocaleString('vi-VN')
       });
-      
+
       setError(err.message || 'Đổi mật khẩu thất bại');
     } finally {
       setLoading(false);

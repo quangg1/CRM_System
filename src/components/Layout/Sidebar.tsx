@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, styled } from '@mui/material';
-import { Dashboard, People, CalendarToday, BarChart, Settings } from '@mui/icons-material';
+import { Dashboard, People, CalendarToday, BarChart, Settings, Person } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 const StyledDrawer = styled(Drawer)({
@@ -24,10 +24,11 @@ const StyledListItem = styled(ListItem)({
 });
 
 const menuItems = [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/' },
+    { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
     { text: 'Customers', icon: <People />, path: '/customers' },
     { text: 'Interactions', icon: <CalendarToday />, path: '/interactions' },
     { text: 'Analytics', icon: <BarChart />, path: '/analytics' },
+    { text: 'Profile', icon: <Person />, path: '/profile' },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
 ];
 
