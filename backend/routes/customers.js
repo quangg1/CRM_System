@@ -8,6 +8,7 @@ const {
     updateCustomer,
     deleteCustomer,
     searchCustomers,
+    searchCustomersByName,
     getCustomerStats
 } = require('../controllers/customerController');
 
@@ -19,6 +20,9 @@ router.get('/stats', getCustomerStats);
 
 // Search customers
 router.get('/search', searchCustomers);
+
+// Search customers by name only
+router.get('/search/name', searchCustomersByName);
 
 // Get customers by status
 router.get('/status/:status', getCustomersByStatus);

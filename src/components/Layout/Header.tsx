@@ -4,15 +4,15 @@ import {
     AppBar,
     Toolbar,
     Typography,
-    InputBase,
-    styled,
-    alpha,
+    Box,
     IconButton,
     Avatar,
     Menu,
     MenuItem,
-    Box,
     Divider,
+    styled,
+    alpha,
+    InputBase,
 } from '@mui/material';
 import { 
     Search as SearchIcon, 
@@ -86,11 +86,8 @@ const Header: React.FC = () => {
             navigate('/login');
             handleClose();
         }
-    };
-
-    const handleProfile = () => {
-        // Navigate to profile page (you can implement this later)
-        console.log('Navigate to profile');
+    };    const handleProfile = () => {
+        navigate('/profile');
         handleClose();
     };
 
@@ -110,8 +107,7 @@ const Header: React.FC = () => {
 
     return (
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-            <Toolbar>
-                <Typography
+            <Toolbar>                <Typography
                     variant="h6"
                     noWrap
                     component="div"

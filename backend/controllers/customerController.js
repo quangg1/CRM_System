@@ -178,6 +178,33 @@ const searchCustomers = async (req, res) => {
     }
 };
 
+// Search customers by name only
+const searchCustomersByName = async (req, res) => {
+    try {
+        const { name } = req.query;
+
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: 'Name parameter is required'
+            });
+        }
+
+        const customers = await Customer.searchByName(name);
+
+        res.json({
+            success: true,
+            data: customers,
+            message: `Search results for name '${name}'`
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 // Get customer statistics
 const getCustomerStats = async (req, res) => {
     try {
@@ -204,5 +231,6 @@ module.exports = {
     updateCustomer,
     deleteCustomer,
     searchCustomers,
+    searchCustomersByName,
     getCustomerStats
 }; 

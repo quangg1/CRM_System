@@ -7,11 +7,12 @@ export interface ApiResponse<T = any> {
 }
 
 class ApiService {
-    private baseURL: string;
-
-    constructor(baseURL: string) {
+    private baseURL: string;    constructor(baseURL: string) {
         this.baseURL = baseURL;
-    }    private async request<T>(
+        console.log('API Service initialized with base URL:', this.baseURL);
+    }
+
+    private async request<T>(
         endpoint: string,
         options: RequestInit = {}
     ): Promise<ApiResponse<T>> {
@@ -28,15 +29,29 @@ class ApiService {
             },
         };
 
+        const finalOptions = {
+            ...defaultOptions,
+            ...options,
+        };
+
+        console.log('Making API request:', {
+            url,
+            method: finalOptions.method || 'GET',
+            body: finalOptions.body,
+            headers: finalOptions.headers
+        });
+
         try {
-            const response = await fetch(url, {
-                ...defaultOptions,
-                ...options,
-            });
+            const response = await fetch(url, finalOptions);
+            console.log('API response status:', response.status);
+            console.log('API response headers:', Object.fromEntries(response.headers.entries()));
 
             const data = await response.json();
+            console.log('API response data:', data);
 
             if (!response.ok) {
+                console.error('API request failed with status:', response.status);
+                console.error('API error response:', data);
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
 
