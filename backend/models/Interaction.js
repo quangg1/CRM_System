@@ -1,5 +1,5 @@
 const { pool } = require('../config/database');
-const { v4: uuidv4 } = require('crypto');
+const { randomUUID } = require('crypto');
 
 class Interaction {
     // Get all interactions
@@ -83,7 +83,7 @@ class Interaction {
     // Create new interaction
     static async create(interactionData) {
         try {
-            const id = uuidv4();
+            const id = randomUUID();
             const { customer_id, type, description, date, status } = interactionData;
 
             const [result] = await pool.execute(

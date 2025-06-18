@@ -22,7 +22,9 @@ const Customers: React.FC = () => {
         try {
             setLoading(true);
             setError(null);
+            console.log('Fetching customers...');
             const data = await customerService.getAll();
+            console.log('Customers fetched:', data);
             setCustomers(data);
         } catch (err) {
             console.error('Error fetching customers:', err);
@@ -34,39 +36,53 @@ const Customers: React.FC = () => {
 
     const handleAddCustomer = async (customerData: CreateCustomerData) => {
         try {
+            console.log('Creating customer with data:', customerData);
+            setError(null);
             const newCustomer = await customerService.create(customerData);
+            console.log('Customer created successfully:', newCustomer);
             setCustomers((prev) => [newCustomer, ...prev]);
             setOpenForm(false);
             setSelectedCustomer(undefined);
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error creating customer:', err);
-            setError('Failed to create customer. Please try again.');
+            console.error('Error details:', {
+                message: err.message,
+                stack: err.stack,
+                name: err.name
+            });
+            setError(`Failed to create customer: ${err.message}`);
         }
     };
 
     const handleEditCustomer = async (customerData: UpdateCustomerData) => {
         if (selectedCustomer) {
             try {
+                console.log('Updating customer with data:', customerData);
+                setError(null);
                 const updatedCustomer = await customerService.update(selectedCustomer.id, customerData);
+                console.log('Customer updated successfully:', updatedCustomer);
                 setCustomers((prev) =>
                     prev.map((c) => (c.id === selectedCustomer.id ? updatedCustomer : c))
                 );
                 setOpenForm(false);
                 setSelectedCustomer(undefined);
-            } catch (err) {
+            } catch (err: any) {
                 console.error('Error updating customer:', err);
-                setError('Failed to update customer. Please try again.');
+                setError(`Failed to update customer: ${err.message}`);
             }
         }
     };
 
     const handleDeleteCustomer = async (customer: Customer) => {
         try {
+            console.log('Deleting customer:', customer.id);
+            setError(null);
             await customerService.delete(customer.id);
+            console.log('Customer deleted successfully');
             setCustomers((prev) => prev.filter((c) => c.id !== customer.id));
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error deleting customer:', err);
-            setError('Failed to delete customer. Please try again.');
+            setError(`Failed to delete customer: ${err.message}`);
         }
     };
 

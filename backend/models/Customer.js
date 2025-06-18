@@ -1,5 +1,5 @@
 const { pool } = require('../config/database');
-const { v4: uuidv4 } = require('crypto');
+const { randomUUID } = require('crypto');
 
 class Customer {
     // Get all customers
@@ -43,7 +43,7 @@ class Customer {
     // Create new customer
     static async create(customerData) {
         try {
-            const id = uuidv4();
+            const id = randomUUID();
             const { name, email, phone, company, status, notes } = customerData;
 
             const [result] = await pool.execute(
