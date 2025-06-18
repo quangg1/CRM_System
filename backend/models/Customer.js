@@ -109,6 +109,20 @@ class Customer {
         }
     }
 
+    // Search customers by name only
+    static async searchByName(name) {
+        try {
+            const searchQuery = `%${name}%`;
+            const [rows] = await pool.execute(
+                'SELECT * FROM customers WHERE name LIKE ? ORDER BY created_at DESC',
+                [searchQuery]
+            );
+            return rows;
+        } catch (error) {
+            throw new Error(`Error searching customers by name: ${error.message}`);
+        }
+    }
+
     // Get customer statistics
     static async getStats() {
         try {

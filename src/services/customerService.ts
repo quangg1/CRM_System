@@ -72,6 +72,12 @@ class CustomerService {
         return response.data || [];
     }
 
+    // Search customers by name only
+    async searchByName(name: string): Promise<Customer[]> {
+        const response = await apiService.get<Customer[]>(`/customers/search/name?name=${encodeURIComponent(name)}`);
+        return response.data || [];
+    }
+
     // Get customer statistics
     async getStats(): Promise<CustomerStats> {
         const response = await apiService.get<CustomerStats>('/customers/stats');
