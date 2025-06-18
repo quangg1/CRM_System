@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Paper,
     Table,
@@ -10,8 +10,14 @@ import {
     TablePagination,
     IconButton,
     Chip,
+    TextField,
+    Box,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from '@mui/material';
-import { Visibility, Edit, Delete } from '@mui/icons-material';
+import { Visibility, Edit, Delete, Search } from '@mui/icons-material';
 import { Interaction, Customer } from '../../types';
 
 interface InteractionListProps {
@@ -46,6 +52,8 @@ const InteractionList: React.FC<InteractionListProps> = ({
 }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [searchName, setSearchName] = useState('');
+    const [searchStatus, setSearchStatus] = useState<string>('all');
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -61,8 +69,60 @@ const InteractionList: React.FC<InteractionListProps> = ({
         return customer ? customer.name : 'Unknown Customer';
     };
 
+    // Filter interactions based on search criteria
+    const filteredInteractions = useMemo(() => {
+        return interactions.filter((interaction) => {
+            const customerName = getCustomerName(interaction.customer_id);
+            const nameMatch = customerName.toLowerCase().includes(searchName.toLowerCase());
+            const statusMatch = searchStatus === 'all' || interaction.status === searchStatus;
+
+            return nameMatch && statusMatch;
+        });
+    }, [interactions, customers, searchName, searchStatus]);
+
+    // Reset page when search criteria change
+    React.useEffect(() => {
+        setPage(0);
+    }, [searchName, searchStatus]);
+
     return (
         <Paper>
+            {/* Search Section */}
+            <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                    <TextField
+                        label="enter name of customer"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                        InputProps={{
+                            startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
+                        }}
+                        size="small"
+                        sx={{ minWidth: 250 }}
+                    />
+                    <FormControl size="small" sx={{ minWidth: 150 }}>
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                            value={searchStatus}
+                            label="Trạng thái"
+                            onChange={(e) => setSearchStatus(e.target.value)}
+                        >
+                            <MenuItem value="all">All</MenuItem>
+                            <MenuItem value="completed">Completed</MenuItem>
+                            <MenuItem value="scheduled">Scheduled</MenuItem>
+                            <MenuItem value="cancelled">Cancel</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Box sx={{ ml: 'auto' }}>
+                        <Chip
+                            label={`${filteredInteractions.length} kết quả`}
+                            color="primary"
+                            variant="outlined"
+                        />
+                    </Box>
+                </Box>
+            </Box>
+
             <TableContainer>
                 <Table>
                     <TableHead>
@@ -76,7 +136,7 @@ const InteractionList: React.FC<InteractionListProps> = ({
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {interactions
+                        {filteredInteractions
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((interaction) => (
                                 <TableRow key={interaction.id}>
@@ -127,7 +187,7 @@ const InteractionList: React.FC<InteractionListProps> = ({
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={interactions.length}
+                count={filteredInteractions.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -137,4 +197,4 @@ const InteractionList: React.FC<InteractionListProps> = ({
     );
 };
 
-export default InteractionList; 
+export default InteractionList;

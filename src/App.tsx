@@ -45,7 +45,7 @@ const App: React.FC = () => {
         setIsAuthenticated(authStatus);
         console.log("🔍 AUTH STATUS:", authStatus ? "Authenticated" : "Not Authenticated");
       } catch (error) {
-        console.error("❌ Error checking authentication:", error);
+        console.error(" Error checking authentication:", error);
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -72,11 +72,11 @@ const App: React.FC = () => {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh' 
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
         }}>
           <div>Loading...</div>
         </Box>
