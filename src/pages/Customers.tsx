@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Container, Typography, Button, Alert, CircularProgress } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import CustomerList from '../components/Customers/CustomerList';
@@ -9,61 +9,31 @@ import { Customer } from '../types';
 
 const Customers: React.FC = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchLoading, setSearchLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [openForm, setOpenForm] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>();
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchStatus, setSearchStatus] = useState<string>('all');
 
     // Fetch customers on component mount
     useEffect(() => {
         fetchCustomers();
     }, []);
 
-    // Debounced search function
-    const debouncedSearch = useCallback(
-        (() => {
-            let timeoutId: NodeJS.Timeout;
-            return (query: string) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    performSearch(query);
-                }, 300);
-            };
-        })(),
-        []
-    );
+    // Filter customers based on search criteria
+    const filteredCustomers = useMemo(() => {
+        return customers.filter((customer) => {
+            const nameMatch = customer.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const statusMatch = searchStatus === 'all' || customer.status === searchStatus;
+            
+            return nameMatch && statusMatch;
+        });
+    }, [customers, searchQuery, searchStatus]);
 
-    const performSearch = async (query: string) => {
-        if (!query.trim()) {
-            setFilteredCustomers(customers);
-            setSearchLoading(false);
-            return;
-        }
-
-        try {
-            setSearchLoading(true);
-            const searchResults = await customerService.search(query);
-            setFilteredCustomers(searchResults);
-        } catch (err) {
-            console.error('Error searching customers:', err);
-            setError('Failed to search customers. Please try again.');
-        } finally {
-            setSearchLoading(false);
-        }
-    };
-
-    const handleSearch = (query: string) => {
+    const handleSearch = (query: string, status: string) => {
         setSearchQuery(query);
-        if (query.trim()) {
-            setSearchLoading(true);
-            debouncedSearch(query);
-        } else {
-            setFilteredCustomers(customers);
-            setSearchLoading(false);
-        }
+        setSearchStatus(status);
     };
 
     const fetchCustomers = async () => {
@@ -74,7 +44,6 @@ const Customers: React.FC = () => {
             const data = await customerService.getAll();
             console.log('Customers fetched:', data);
             setCustomers(data);
-            setFilteredCustomers(data);
         } catch (err) {
             console.error('Error fetching customers:', err);
             setError('Failed to load customers. Please try again.');
@@ -90,7 +59,6 @@ const Customers: React.FC = () => {
             const newCustomer = await customerService.create(customerData);
             console.log('Customer created successfully:', newCustomer);
             setCustomers((prev) => [newCustomer, ...prev]);
-            setFilteredCustomers((prev) => [newCustomer, ...prev]);
             setOpenForm(false);
             setSelectedCustomer(undefined);
         } catch (err: any) {
@@ -114,9 +82,6 @@ const Customers: React.FC = () => {
                 setCustomers((prev) =>
                     prev.map((c) => (c.id === selectedCustomer.id ? updatedCustomer : c))
                 );
-                setFilteredCustomers((prev) =>
-                    prev.map((c) => (c.id === selectedCustomer.id ? updatedCustomer : c))
-                );
                 setOpenForm(false);
                 setSelectedCustomer(undefined);
             } catch (err: any) {
@@ -133,7 +98,6 @@ const Customers: React.FC = () => {
             await customerService.delete(customer.id);
             console.log('Customer deleted successfully');
             setCustomers((prev) => prev.filter((c) => c.id !== customer.id));
-            setFilteredCustomers((prev) => prev.filter((c) => c.id !== customer.id));
         } catch (err: any) {
             console.error('Error deleting customer:', err);
             setError(`Failed to delete customer: ${err.message}`);
@@ -192,7 +156,7 @@ const Customers: React.FC = () => {
                 )}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                     <Typography variant="h4" component="h1">
-                        Customers ({searchQuery ? filteredCustomers.length : customers.length})
+                        Customers ({filteredCustomers.length})
                     </Typography>
                     <Button
                         variant="contained"
@@ -208,8 +172,9 @@ const Customers: React.FC = () => {
                 <CustomerSearch
                     onSearch={handleSearch}
                     searchQuery={searchQuery}
-                    resultCount={searchQuery ? filteredCustomers.length : undefined}
-                    loading={searchLoading}
+                    searchStatus={searchStatus}
+                    resultCount={filteredCustomers.length}
+                    loading={false}
                 />
                 <CustomerList
                     customers={filteredCustomers}
