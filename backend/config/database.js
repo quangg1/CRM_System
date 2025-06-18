@@ -23,17 +23,17 @@ const pool = mysql.createPool(dbConfig);
 const testConnection = async () => {
     try {
         const connection = await pool.getConnection();
-        console.log('✅ Database connected successfully!');
-        console.log(`📊 Database: ${process.env.DB_NAME || 'crm_system'}`);
-        console.log(`🌐 Host: ${process.env.DB_HOST || 'localhost'}`);
+        console.log('Database connected successfully!');
+        console.log(` Database: ${process.env.DB_NAME || 'crm_system'}`);
+        console.log(`Host: ${process.env.DB_HOST || 'localhost'}`);
         connection.release();
     } catch (error) {
-        console.error('❌ Database connection failed:', error.message);
+        console.error(' Database connection failed:', error.message);
         if (process.env.NODE_ENV === 'production') {
-            console.error('🚨 Exiting due to database connection failure in production');
+            console.error(' Exiting due to database connection failure in production');
             process.exit(1);
         } else {
-            console.warn('⚠️  Database connection failed in development mode, continuing...');
+            console.warn(' Database connection failed in development mode, continuing...');
         }
     }
 };
