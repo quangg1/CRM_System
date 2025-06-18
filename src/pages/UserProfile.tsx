@@ -215,12 +215,10 @@ const UserProfile: React.FC = () => {
       console.log('ℹ️ INFO: Password Change Started', {
         userId: user?.id,
         timestamp: new Date().toLocaleString('vi-VN')
-      });
-
-      await authService.changePassword({
-        currentPassword: passwordForm.currentPassword,
-        newPassword: passwordForm.newPassword,
-      });
+      });      await authService.changePassword(
+        passwordForm.currentPassword,
+        passwordForm.newPassword
+      );
 
       const endTime = performance.now();
       const duration = endTime - startTime;
