@@ -10,6 +10,20 @@ DROP DATABASE IF EXISTS crm_system;
 CREATE DATABASE crm_system;
 USE crm_system;
 
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    company VARCHAR(100),
+    role ENUM('admin', 'sales', 'support') DEFAULT 'sales',
+    avatar VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_email (email)
+);
+
 -- Create customers table
 CREATE TABLE IF NOT EXISTS customers (
     id VARCHAR(36) PRIMARY KEY,
@@ -47,6 +61,12 @@ CREATE TABLE IF NOT EXISTS activities (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
+
+-- Insert sample users
+INSERT INTO users (id, name, email, password, company, role) VALUES
+(UUID(), 'Admin User', 'admin@crm.com', '$2a$10$rOJMlhqG.gNKqJf8LhCj7.CWNaQdJp4XKGjLJZJlJjJkQwlJJlqJ2', 'CRM Company', 'admin'),
+(UUID(), 'Sales Manager', 'sales@crm.com', '$2a$10$rOJMlhqG.gNKqJf8LhCj7.CWNaQdJp4XKGjLJZJlJjJkQwlJJlqJ2', 'CRM Company', 'sales'),
+(UUID(), 'Support Agent', 'support@crm.com', '$2a$10$rOJMlhqG.gNKqJf8LhCj7.CWNaQdJp4XKGjLJZJlJjJkQwlJJlqJ2', 'CRM Company', 'support');
 
 -- Insert sample customers
 INSERT INTO customers (id, name, email, phone, company, status, notes) VALUES

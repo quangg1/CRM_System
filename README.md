@@ -4,6 +4,8 @@ A comprehensive Customer Relationship Management (CRM) system built with React T
 
 ## Features
 
+- **User Authentication**: Secure login and registration system
+- **Protected Routes**: Access control based on user authentication
 - **Customer Management**: Add, edit, delete, and view customers
 - **Interaction Tracking**: Record and manage customer interactions (calls, emails, meetings, notes)
 - **Dashboard**: Real-time statistics and upcoming interactions
@@ -16,11 +18,14 @@ A comprehensive Customer Relationship Management (CRM) system built with React T
 - React 19 with TypeScript
 - Material-UI (MUI) for UI components
 - React Router for navigation
-- Axios for API calls
+- JWT for authentication
+- Local Storage for session management
 
 ### Backend
 - Node.js with Express
 - MySQL database with mysql2
+- JWT Authentication
+- bcryptjs for password hashing
 - RESTful API design
 - CORS enabled for frontend integration
 
@@ -29,6 +34,26 @@ A comprehensive Customer Relationship Management (CRM) system built with React T
 - Node.js (v16 or higher)
 - MySQL (v8.0 or higher)
 - npm or yarn
+
+## Authentication
+
+The system includes a complete authentication system:
+
+### Demo Login Credentials
+- **Email**: admin@crm.com
+- **Password**: admin123
+
+### User Roles
+- **admin**: Full access to all features
+- **sales**: Access to customer management and interactions
+- **support**: Access to customer support features
+
+### Features
+- User registration and login
+- JWT-based authentication
+- Protected routes
+- Logout functionality
+- Password hashing with bcryptjs
 
 ## Installation & Setup
 

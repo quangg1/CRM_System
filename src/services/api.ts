@@ -11,17 +11,19 @@ class ApiService {
 
     constructor(baseURL: string) {
         this.baseURL = baseURL;
-    }
-
-    private async request<T>(
+    }    private async request<T>(
         endpoint: string,
         options: RequestInit = {}
     ): Promise<ApiResponse<T>> {
         const url = `${this.baseURL}${endpoint}`;
 
+        // Get auth token if available
+        const token = localStorage.getItem('token');
+
         const defaultOptions: RequestInit = {
             headers: {
                 'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` }),
                 ...options.headers,
             },
         };
