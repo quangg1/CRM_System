@@ -93,7 +93,7 @@ const App: React.FC = () => {
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+              isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
             }
           />
 
@@ -108,8 +108,9 @@ const App: React.FC = () => {
                   <Routes>
                     <Route
                       path="/"
-                      element={<Navigate to="/dashboard" replace />}
-                    />                    <Route path="/dashboard" element={<Dashboard />} />
+                      element={<Navigate to="/dashboard" />}
+                    />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/customers" element={<Customers />} />
                     <Route path="/interactions" element={<Interactions />} />
                     <Route path="/profile" element={<UserProfile />} />

@@ -176,7 +176,11 @@ const Login: React.FC = () => {
           to: "/dashboard",
           timestamp: new Date().toLocaleString('vi-VN')
         });
-        navigate("/dashboard");
+        
+        // Add a small delay to prevent navigation race conditions
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 100);
 
       } catch (authError: any) {
         const endTime = performance.now();
@@ -344,7 +348,11 @@ const Login: React.FC = () => {
           to: "/dashboard",
           timestamp: new Date().toLocaleString('vi-VN')
         });
-        navigate("/dashboard");
+        
+        // Add a small delay to prevent navigation race conditions
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 100);
 
       } catch (authError: any) {
         const endTime = performance.now();
