@@ -84,6 +84,24 @@ const Interactions: React.FC = () => {
         console.log('View interaction:', interaction);
     };
 
+    const handleTypeChange = async (interaction: Interaction, newType: Interaction['type']) => {
+        try {
+            const updatedInteraction = await interactionService.update(interaction.id, { ...interaction, type: newType });
+            setInteractions((prev) => prev.map((i) => (i.id === interaction.id ? updatedInteraction : i)));
+        } catch (err) {
+            setError('Failed to update interaction type. Please try again.');
+        }
+    };
+
+    const handleStatusChange = async (interaction: Interaction, newStatus: Interaction['status']) => {
+        try {
+            const updatedInteraction = await interactionService.update(interaction.id, { ...interaction, status: newStatus });
+            setInteractions((prev) => prev.map((i) => (i.id === interaction.id ? updatedInteraction : i)));
+        } catch (err) {
+            setError('Failed to update interaction status. Please try again.');
+        }
+    };
+
     if (loading) {
         return (
             <Box
@@ -153,6 +171,8 @@ const Interactions: React.FC = () => {
                     }}
                     onDelete={handleDeleteInteraction}
                     onView={handleViewInteraction}
+                    onTypeChange={handleTypeChange}
+                    onStatusChange={handleStatusChange}
                 />
                 <InteractionForm
                     open={openForm}

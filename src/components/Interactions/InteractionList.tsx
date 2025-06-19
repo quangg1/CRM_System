@@ -16,6 +16,7 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    Menu,
 } from '@mui/material';
 import { Visibility, Edit, Delete, Search } from '@mui/icons-material';
 import { Interaction, Customer } from '../../types';
@@ -26,6 +27,8 @@ interface InteractionListProps {
     onView: (interaction: Interaction) => void;
     onEdit: (interaction: Interaction) => void;
     onDelete: (interaction: Interaction) => void;
+    onTypeChange?: (interaction: Interaction, newType: Interaction['type']) => void;
+    onStatusChange?: (interaction: Interaction, newStatus: Interaction['status']) => void;
 }
 
 const getTypeColor = (type: Interaction['type']) => {
@@ -49,11 +52,15 @@ const InteractionList: React.FC<InteractionListProps> = ({
     onView,
     onEdit,
     onDelete,
+    onTypeChange,
+    onStatusChange,
 }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchName, setSearchName] = useState('');
     const [searchStatus, setSearchStatus] = useState<string>('all');
+    const [typeMenuAnchor, setTypeMenuAnchor] = React.useState<{ element: HTMLElement; interaction: Interaction } | null>(null);
+    const [statusMenuAnchor, setStatusMenuAnchor] = React.useState<{ element: HTMLElement; interaction: Interaction } | null>(null);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -84,6 +91,30 @@ const InteractionList: React.FC<InteractionListProps> = ({
     React.useEffect(() => {
         setPage(0);
     }, [searchName, searchStatus]);
+
+    const handleTypeClick = (event: React.MouseEvent<HTMLElement>, interaction: Interaction) => {
+        event.stopPropagation();
+        setTypeMenuAnchor({ element: event.currentTarget, interaction });
+    };
+    const handleTypeMenuClose = () => setTypeMenuAnchor(null);
+    const handleTypeChange = (newType: Interaction['type']) => {
+        if (typeMenuAnchor && onTypeChange) {
+            onTypeChange(typeMenuAnchor.interaction, newType);
+        }
+        handleTypeMenuClose();
+    };
+
+    const handleStatusClick = (event: React.MouseEvent<HTMLElement>, interaction: Interaction) => {
+        event.stopPropagation();
+        setStatusMenuAnchor({ element: event.currentTarget, interaction });
+    };
+    const handleStatusMenuClose = () => setStatusMenuAnchor(null);
+    const handleStatusChange = (newStatus: Interaction['status']) => {
+        if (statusMenuAnchor && onStatusChange) {
+            onStatusChange(statusMenuAnchor.interaction, newStatus);
+        }
+        handleStatusMenuClose();
+    };
 
     return (
         <Paper>
@@ -149,6 +180,8 @@ const InteractionList: React.FC<InteractionListProps> = ({
                                             label={interaction.type}
                                             color={getTypeColor(interaction.type)}
                                             size="small"
+                                            onClick={(e) => handleTypeClick(e, interaction)}
+                                            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
                                         />
                                     </TableCell>
                                     <TableCell>{interaction.description}</TableCell>
@@ -157,6 +190,8 @@ const InteractionList: React.FC<InteractionListProps> = ({
                                             label={interaction.status}
                                             color={interaction.status === 'completed' ? 'success' : 'warning'}
                                             size="small"
+                                            onClick={(e) => handleStatusClick(e, interaction)}
+                                            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
                                         />
                                     </TableCell>
                                     <TableCell align="right">
@@ -193,6 +228,25 @@ const InteractionList: React.FC<InteractionListProps> = ({
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <Menu
+                anchorEl={typeMenuAnchor?.element}
+                open={Boolean(typeMenuAnchor)}
+                onClose={handleTypeMenuClose}
+            >
+                <MenuItem onClick={() => handleTypeChange('email')}>Email</MenuItem>
+                <MenuItem onClick={() => handleTypeChange('call')}>Call</MenuItem>
+                <MenuItem onClick={() => handleTypeChange('meeting')}>Meeting</MenuItem>
+                <MenuItem onClick={() => handleTypeChange('note')}>Note</MenuItem>
+            </Menu>
+            <Menu
+                anchorEl={statusMenuAnchor?.element}
+                open={Boolean(statusMenuAnchor)}
+                onClose={handleStatusMenuClose}
+            >
+                <MenuItem onClick={() => handleStatusChange('scheduled')}>Scheduled</MenuItem>
+                <MenuItem onClick={() => handleStatusChange('completed')}>Completed</MenuItem>
+                <MenuItem onClick={() => handleStatusChange('cancelled')}>Cancelled</MenuItem>
+            </Menu>
         </Paper>
     );
 };

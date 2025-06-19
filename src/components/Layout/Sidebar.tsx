@@ -15,7 +15,6 @@ const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/' },
     { text: 'Customers', icon: <People />, path: '/customers' },
     { text: 'Interactions', icon: <CalendarToday />, path: '/interactions' },
-    { text: 'Analytics', icon: <BarChart />, path: '/analytics' },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
 ];
 
