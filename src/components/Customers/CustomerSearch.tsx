@@ -91,11 +91,20 @@ const CustomerSearch: React.FC<CustomerSearchProps> = ({
                     </Select>
                 </FormControl>
                 <Box sx={{ ml: 'auto' }}>
-                    <Chip
-                        label={`${resultCount || 0} kết quả`}
-                        color="primary"
-                        variant="outlined"
-                    />
+                    <span
+                        style={{
+                            display: 'inline-block',
+                            padding: '4px 12px',
+                            border: '1px solid #1976d2',
+                            borderRadius: '16px',
+                            color: '#1976d2',
+                            fontWeight: 500,
+                            background: '#fff',
+                            fontSize: 14,
+                        }}
+                    >
+                        {`${resultCount || 0} kết quả`}
+                    </span>
                 </Box>
             </Box>
             {(searchQuery || searchStatus !== 'all') && (
