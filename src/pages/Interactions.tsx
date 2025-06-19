@@ -8,6 +8,13 @@ import customerService, { Product } from '../services/customerService';
 import { Interaction, Customer } from '../types';
 import { TextField, Select, MenuItem, IconButton } from '@mui/material';
 
+// Thêm hàm chuyển đổi date về định dạng MySQL DATETIME
+function toMySQLDateTime(dateString: string): string {
+    const date = new Date(dateString);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 const Interactions: React.FC = () => {
     const [interactions, setInteractions] = useState<Interaction[]>([]);
     const [customers, setCustomers] = useState<Customer[]>([]);
@@ -51,7 +58,10 @@ const Interactions: React.FC = () => {
 
     const handleAddInteraction = async (interactionData: CreateInteractionData) => {
         try {
-            const newInteraction = await interactionService.create(interactionData);
+            const newInteraction = await interactionService.create({
+                ...interactionData,
+                date: toMySQLDateTime(interactionData.date)
+            });
             setInteractions((prev) => [newInteraction, ...prev]);
             setOpenForm(false);
             setSelectedInteraction(undefined);
@@ -64,7 +74,10 @@ const Interactions: React.FC = () => {
     const handleEditInteraction = async (interactionData: UpdateInteractionData) => {
         if (selectedInteraction) {
             try {
-                const updatedInteraction = await interactionService.update(selectedInteraction.id, interactionData);
+                const updatedInteraction = await interactionService.update(selectedInteraction.id, {
+                    ...interactionData,
+                    date: toMySQLDateTime(interactionData.date)
+                });
                 setInteractions((prev) =>
                     prev.map((i) => (i.id === selectedInteraction.id ? updatedInteraction : i))
                 );
@@ -118,7 +131,11 @@ const Interactions: React.FC = () => {
 
     const handleTypeChange = async (interaction: Interaction, newType: Interaction['type']) => {
         try {
-            const updatedInteraction = await interactionService.update(interaction.id, { ...interaction, type: newType });
+            const updatedInteraction = await interactionService.update(interaction.id, {
+                ...interaction,
+                type: newType,
+                date: toMySQLDateTime(interaction.date)
+            });
             setInteractions((prev) => prev.map((i) => (i.id === interaction.id ? updatedInteraction : i)));
         } catch (err) {
             setError('Failed to update interaction type. Please try again.');
@@ -127,7 +144,11 @@ const Interactions: React.FC = () => {
 
     const handleStatusChange = async (interaction: Interaction, newStatus: Interaction['status']) => {
         try {
-            const updatedInteraction = await interactionService.update(interaction.id, { ...interaction, status: newStatus });
+            const updatedInteraction = await interactionService.update(interaction.id, {
+                ...interaction,
+                status: newStatus,
+                date: toMySQLDateTime(interaction.date)
+            });
             setInteractions((prev) => prev.map((i) => (i.id === interaction.id ? updatedInteraction : i)));
         } catch (err) {
             setError('Failed to update interaction status. Please try again.');

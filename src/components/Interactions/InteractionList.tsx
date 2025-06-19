@@ -58,6 +58,8 @@ const InteractionList: React.FC<InteractionListProps> = ({
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchName, setSearchName] = useState('');
     const [searchStatus, setSearchStatus] = useState<string>('all');
+    const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
+    const [statusValue, setStatusValue] = useState<Interaction['status']>('scheduled');
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -157,11 +159,37 @@ const InteractionList: React.FC<InteractionListProps> = ({
                                     </TableCell>
                                     <TableCell>{interaction.description}</TableCell>
                                     <TableCell>
-                                        <Chip
-                                            label={interaction.status}
-                                            color={interaction.status === 'completed' ? 'success' : 'warning'}
-                                            size="small"
-                                        />
+                                        {editingStatusId === interaction.id ? (
+                                            <Select
+                                                value={statusValue}
+                                                onChange={async (e) => {
+                                                    const newStatus = e.target.value as Interaction['status'];
+                                                    setStatusValue(newStatus);
+                                                    await onStatusChange(interaction, newStatus);
+                                                    setEditingStatusId(null);
+                                                }}
+                                                onBlur={() => setEditingStatusId(null)}
+                                                size="small"
+                                                autoFocus
+                                                sx={{ minWidth: 120 }}
+                                            >
+                                                <MenuItem value="scheduled">Scheduled</MenuItem>
+                                                <MenuItem value="completed">Completed</MenuItem>
+                                                <MenuItem value="cancelled">Cancelled</MenuItem>
+                                            </Select>
+                                        ) : (
+                                            <Chip
+                                                label={interaction.status}
+                                                color={interaction.status === 'completed' ? 'success' : 'warning'}
+                                                size="small"
+                                                onClick={e => {
+                                                    e.stopPropagation();
+                                                    setEditingStatusId(interaction.id);
+                                                    setStatusValue(interaction.status);
+                                                }}
+                                                sx={{ cursor: 'pointer' }}
+                                            />
+                                        )}
                                     </TableCell>
                                     <TableCell align="right">
                                         <IconButton
