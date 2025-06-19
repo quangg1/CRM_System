@@ -46,6 +46,15 @@ const customerProductController = {
         } catch (err) {
             next(err);
         }
+    },
+
+    async getByCustomerId(req, res, next) {
+        try {
+            const data = await CustomerProduct.getByCustomerId(req.params.customerId);
+            res.json({ success: true, data });
+        } catch (err) {
+            next(err);
+        }
     }
 };
 

@@ -26,6 +26,8 @@ interface InteractionListProps {
     onView: (interaction: Interaction) => void;
     onEdit: (interaction: Interaction) => void;
     onDelete: (interaction: Interaction) => void;
+    onTypeChange: (interaction: Interaction, newType: "call" | "email" | "meeting" | "note") => Promise<void>;
+    onStatusChange: (interaction: Interaction, newStatus: Interaction['status']) => Promise<void>;
 }
 
 const getTypeColor = (type: Interaction['type']) => {
@@ -49,6 +51,8 @@ const InteractionList: React.FC<InteractionListProps> = ({
     onView,
     onEdit,
     onDelete,
+    onTypeChange,
+    onStatusChange,
 }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);

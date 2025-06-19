@@ -35,6 +35,11 @@ class Activity {
         const [result] = await pool.execute('DELETE FROM activities WHERE id = ?', [id]);
         return result.affectedRows > 0;
     }
+
+    static async getByInteractionId(interactionId) {
+        const [rows] = await pool.execute('SELECT * FROM activities WHERE interaction_id = ? ORDER BY created_at DESC', [interactionId]);
+        return rows;
+    }
 }
 
 module.exports = Activity; 

@@ -1,17 +1,5 @@
 import apiService, { ApiResponse } from './api';
-
-export interface Interaction {
-    id: string;
-    customer_id: string;
-    customer_name: string;
-    customer_email: string;
-    type: 'call' | 'email' | 'meeting' | 'note';
-    description: string;
-    date: string;
-    status: 'scheduled' | 'completed' | 'cancelled';
-    created_at: string;
-    updated_at: string;
-}
+import { Interaction } from '../types';
 
 export interface InteractionStats {
     total: number;
@@ -33,6 +21,16 @@ export interface CreateInteractionData {
 }
 
 export interface UpdateInteractionData extends CreateInteractionData { }
+
+export interface Activity {
+    id: string;
+    interaction_id: string;
+    type: 'call' | 'email' | 'meeting' | 'note';
+    title: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
 
 class InteractionService {
     // Get all interactions
@@ -92,6 +90,29 @@ class InteractionService {
     async getStats(): Promise<InteractionStats> {
         const response = await apiService.get<InteractionStats>('/interactions/stats');
         return response.data!;
+    }
+
+    // Get activities of an interaction
+    async getActivities(interactionId: string): Promise<Activity[]> {
+        const response = await apiService.get<Activity[]>(`/interactions/${interactionId}/activities`);
+        return response.data || [];
+    }
+
+    // Add activity
+    async addActivity(data: { interaction_id: string; type: string; title: string; description: string }): Promise<Activity> {
+        const response = await apiService.post<Activity>('/activities', data);
+        return response.data!;
+    }
+
+    // Update activity
+    async updateActivity(id: string, data: { type: string; title: string; description: string }): Promise<Activity> {
+        const response = await apiService.put<Activity>(`/activities/${id}`, data);
+        return response.data!;
+    }
+
+    // Delete activity
+    async deleteActivity(id: string): Promise<void> {
+        await apiService.delete(`/activities/${id}`);
     }
 }
 

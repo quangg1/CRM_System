@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Container, Alert, CircularProgress, Paper, Typography, ToggleButton, ToggleButtonGroup, Stack } from '@mui/material';
 import { People, TrendingUp, AttachMoney, Schedule, BarChart as BarChartIcon, PieChart as PieChartIcon } from '@mui/icons-material';
 import customerService, { CustomerStats } from '../services/customerService';
-import interactionService, { InteractionStats, Interaction } from '../services/interactionService';
+import interactionService, { InteractionStats } from '../services/interactionService';
+import { Interaction } from '../types';
 import {
     BarChart,
     Bar,

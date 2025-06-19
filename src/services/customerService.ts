@@ -30,6 +30,28 @@ export interface CreateCustomerData {
 
 export interface UpdateCustomerData extends CreateCustomerData { }
 
+export interface CustomerProduct {
+    id: string;
+    customer_id: string;
+    product_id: string;
+    status: string;
+    product_name: string;
+    product_status: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    description?: string;
+    price?: number;
+    category?: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+}
+
 class CustomerService {
     // Get all customers
     async getAll(): Promise<Customer[]> {
@@ -82,6 +104,41 @@ class CustomerService {
     async getStats(): Promise<CustomerStats> {
         const response = await apiService.get<CustomerStats>('/customers/stats');
         return response.data!;
+    }
+
+    // Get products of a customer
+    async getCustomerProducts(customerId: string): Promise<CustomerProduct[]> {
+        const response = await apiService.get<CustomerProduct[]>(`/customerProducts/customer/${customerId}`);
+        return response.data || [];
+    }
+
+    // Get all products
+    async getAllProducts(): Promise<Product[]> {
+        const response = await apiService.get<Product[]>('/products');
+        return response.data || [];
+    }
+
+    // Add customer product
+    async addCustomerProduct(data: { customer_id: string; product_id: string; status: string }): Promise<CustomerProduct> {
+        const response = await apiService.post<CustomerProduct>('/customerProducts', data);
+        return response.data!;
+    }
+
+    // Update customer product
+    async updateCustomerProduct(id: string, data: { status: string }): Promise<CustomerProduct> {
+        const response = await apiService.put<CustomerProduct>(`/customerProducts/${id}`, data);
+        return response.data!;
+    }
+
+    // Delete customer product
+    async deleteCustomerProduct(id: string): Promise<void> {
+        await apiService.delete(`/customerProducts/${id}`);
+    }
+
+    // Get product by id
+    async getProductById(id: string): Promise<Product | null> {
+        const response = await apiService.get<Product>(`/products/${id}`);
+        return response.data || null;
     }
 }
 

@@ -9,6 +9,9 @@ const errorHandler = require('./middleware/errorHandler');
 const customerRoutes = require('./routes/customers');
 const interactionRoutes = require('./routes/interactions');
 const authRoutes = require('./routes/auth');
+const customerProductRoutes = require('./routes/customerProducts');
+const productRoutes = require('./routes/products');
+const activityRoutes = require('./routes/activities');
 
 const app = express();
 
@@ -24,6 +27,9 @@ testConnection();
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/interactions', interactionRoutes);
+app.use('/api/customerProducts', customerProductRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/activities', activityRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -1,4 +1,5 @@
 const Interaction = require('../models/Interaction');
+const Activity = require('../models/Activity');
 
 // Get all interactions
 const getAllInteractions = async (req, res) => {
@@ -225,6 +226,16 @@ const getInteractionStats = async (req, res) => {
     }
 };
 
+// Get activities by interaction ID
+const getActivitiesByInteractionId = async (req, res, next) => {
+    try {
+        const data = await Activity.getByInteractionId(req.params.interactionId);
+        res.json({ success: true, data });
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     getAllInteractions,
     getInteractionById,
@@ -235,5 +246,6 @@ module.exports = {
     updateInteraction,
     deleteInteraction,
     getUpcomingInteractions,
-    getInteractionStats
+    getInteractionStats,
+    getActivitiesByInteractionId
 }; 

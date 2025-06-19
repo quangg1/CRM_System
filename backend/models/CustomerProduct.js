@@ -35,6 +35,18 @@ class CustomerProduct {
         const [result] = await pool.execute('DELETE FROM customer_products WHERE id = ?', [id]);
         return result.affectedRows > 0;
     }
+
+    static async getByCustomerId(customerId) {
+        const [rows] = await pool.execute(
+            `SELECT cp.*, p.name as product_name, p.status as product_status
+             FROM customer_products cp
+             JOIN products p ON cp.product_id = p.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.created_at DESC`,
+            [customerId]
+        );
+        return rows;
+    }
 }
 
 module.exports = CustomerProduct; 

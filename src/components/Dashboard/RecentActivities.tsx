@@ -10,7 +10,7 @@ import {
     Divider,
 } from '@mui/material';
 import { Phone, Email, Event, Note } from '@mui/icons-material';
-import { Interaction } from '../../services/interactionService';
+import { Interaction } from '../../types';
 
 interface RecentActivitiesProps {
     activities: Interaction[];

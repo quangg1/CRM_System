@@ -10,7 +10,8 @@ const {
     updateInteraction,
     deleteInteraction,
     getUpcomingInteractions,
-    getInteractionStats
+    getInteractionStats,
+    getActivitiesByInteractionId
 } = require('../controllers/interactionController');
 
 // Get all interactions
@@ -33,6 +34,9 @@ router.get('/customer/:customerId', getInteractionsByCustomerId);
 
 // Get interaction by ID
 router.get('/:id', getInteractionById);
+
+// Get activities by interaction ID
+router.get('/:interactionId/activities', getActivitiesByInteractionId);
 
 // Create new interaction
 router.post('/', createInteraction);

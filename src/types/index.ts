@@ -13,6 +13,7 @@ export interface Customer {
 export interface Interaction {
     id: string;
     customer_id: string;
+    product_id: string;
     customer_name: string;
     customer_email: string;
     type: 'call' | 'email' | 'meeting' | 'note';
