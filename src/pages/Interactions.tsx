@@ -84,6 +84,24 @@ const Interactions: React.FC = () => {
         console.log('View interaction:', interaction);
     };
 
+    const handleTypeChange = (interaction: Interaction, newType: Interaction['type']) => {
+        setInteractions((prev) =>
+            prev.map((item) =>
+                item.id === interaction.id ? { ...item, type: newType } : item
+            )
+        );
+        // Nếu cần gọi API để cập nhật trên server, gọi ở đây
+    };
+
+    const handleStatusChange = (interaction: Interaction, newStatus: Interaction['status']) => {
+        setInteractions((prev) =>
+            prev.map((item) =>
+                item.id === interaction.id ? { ...item, status: newStatus } : item
+            )
+        );
+        // Nếu cần gọi API để cập nhật trên server, gọi ở đây
+    };
+
     if (loading) {
         return (
             <Box
@@ -153,6 +171,8 @@ const Interactions: React.FC = () => {
                     }}
                     onDelete={handleDeleteInteraction}
                     onView={handleViewInteraction}
+                    onTypeChange={handleTypeChange}
+                    onStatusChange={handleStatusChange}
                 />
                 <InteractionForm
                     open={openForm}
